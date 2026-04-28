@@ -1,12 +1,15 @@
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Editor files
-.vscode/
-*.swp
-*.swo
-
-# Local build artifacts
+# HAOS build artifacts
 *.tar
-*.img
+build/
+tmp/
+*.log
+
+# Sensitive defaults
+data/options.json
+secrets.yaml
+
+# IDE / OS
+.DS_Store
+*.swp
+.vscode/
+.idea/

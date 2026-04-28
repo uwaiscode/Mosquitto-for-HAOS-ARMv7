@@ -1,14 +1,36 @@
 ARG BUILD_FROM=alpine:3.20
 FROM $BUILD_FROM
 
-# Install mosquitto (includes mosquitto_passwd) and jq
-RUN apk add --no-cache mosquitto jq
+# ===== S6-OVERLAY INSTALLATION (WAJIB untuk HAOS Add-on) =====
+ARG S6_OVERLAY_VERSION=3.2.0.2
+ARG TARGETARCH=arm
 
-# Copy mosquitto config
-COPY mosquitto.conf /etc/mosquitto/mosquitto.conf
+# Download & extract s6-overlay (noarch + arch-specific)
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${TARGETARCH}.tar.xz /tmp
 
-# Copy startup script
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
+    tar -C / -Jxpf /tmp/s6-overlay-${TARGETARCH}.tar.xz && \
+    rm -rf /tmp/*.tar.xz && \
+    \
+# ===== INSTALL DEPENDENCIES =====
+    apk add --no-cache \
+        mosquitto \
+        jq \
+        openssl \
+        tzdata && \
+    \
+# ===== SETUP USER & DIRECTORIES =====
+    addgroup -S mosquitto && \
+    adduser -S -G mosquitto -h /var/lib/mosquitto mosquitto && \
+    mkdir -p /etc/mosquitto /data/mosquitto /var/lib/mosquitto && \
+    chown -R mosquitto:mosquitto /etc/mosquitto /data/mosquitto /var/lib/mosquitto && \
+    \
+# ===== COPY CONFIGURATION =====
+    COPY mosquitto.conf /etc/mosquitto/mosquitto.conf && \
+    \
+# ===== COPY S6 SERVICES (run.sh dipindah ke struktur s6) =====
+    COPY rootfs/ /
 
-ENTRYPOINT ["/run.sh"]
+# ===== ENTRYPOINT WAJIB: /init dari s6-overlay =====
+ENTRYPOINT ["/init"]
