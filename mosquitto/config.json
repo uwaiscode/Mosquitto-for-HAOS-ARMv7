@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "slug": "mosquitto_neutron",
   "description": "Mosquitto MQTT Broker with WebSocket support. MQTT: 1883, WebSocket: 9001. User: neutron",
-  "url": "https://github.com/YOUR_GITHUB_USERNAME/mosquitto-For-HAOS-ARMv7",
+  "url": "https://github.com/uwaiscode/Mosquitto-for-HAOS-ARMv7",
   "arch": ["armv7"],
   "startup": "system",
   "boot": "auto",

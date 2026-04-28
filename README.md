@@ -29,9 +29,9 @@ Mendukung koneksi MQTT standar dan MQTT over WebSocket.
 
 1. Buka Home Assistant → **Settings** → **Add-ons** → **Add-on Store**
 2. Klik ikon tiga titik (⋮) di pojok kanan atas → **Repositories**
-3. Tambahkan URL:
+3. Tambahkan URL berikut:
    ```
-   https://github.com/YOUR_GITHUB_USERNAME/mosquitto-For-HAOS-ARMv7
+   https://github.com/uwaiscode/Mosquitto-for-HAOS-ARMv7
    ```
 4. Klik **Add** → **Close**
 
@@ -62,13 +62,13 @@ mqtt_password: neutron123
 
 ## Informasi Koneksi Default
 
-| Parameter  | Nilai         |
-|------------|---------------|
+| Parameter  | Nilai                  |
+|------------|------------------------|
 | Host       | IP perangkat HAOS Anda |
-| MQTT Port  | `1883`        |
-| WS Port    | `9001`        |
-| Username   | `neutron`     |
-| Password   | `neutron123`  |
+| MQTT Port  | `1883`                 |
+| WS Port    | `9001`                 |
+| Username   | `neutron`              |
+| Password   | `neutron123`           |
 
 ---
 
@@ -113,31 +113,36 @@ client.connect("ESP_Device", mqtt_user, mqtt_pass);
 
 ---
 
-## Struktur File
+## Struktur Repository
 
 ```
-mosquitto-For-HAOS-ARMv7/
-├── config.json        # Konfigurasi addon HAOS
-├── build.json         # Konfigurasi build Docker (ARMv7)
-├── Dockerfile         # Docker image definition
-├── mosquitto.conf     # Konfigurasi Mosquitto broker
-├── run.sh             # Script startup addon
-└── README.md          # Dokumentasi ini
+Mosquitto-for-HAOS-ARMv7/
+├── repository.yaml        # Wajib: identifikasi sebagai addon repository HAOS
+├── README.md              # Dokumentasi ini
+└── mosquitto/             # Folder addon
+    ├── config.json        # Konfigurasi addon HAOS
+    ├── build.json         # Konfigurasi build Docker (ARMv7)
+    ├── Dockerfile         # Docker image definition
+    ├── mosquitto.conf     # Konfigurasi Mosquitto broker
+    └── run.sh             # Script startup addon
 ```
 
 ---
 
 ## Troubleshooting
 
+**"not a valid add-on repository"?**
+Pastikan file `repository.yaml` ada di root repository GitHub.
+
 **Addon tidak muncul setelah tambah repo?**
 Refresh browser atau clear cache, lalu coba lagi.
 
 **Koneksi ditolak (Connection Refused)?**
-- Pastikan addon sudah **Running**
-- Cek port 1883/9001 tidak diblokir firewall
+- Pastikan addon sudah berstatus **Running**
+- Cek port 1883/9001 tidak diblokir firewall router
 
 **Authentication Failed?**
-- Pastikan username dan password di konfigurasi sudah benar
+- Pastikan username dan password di tab Configuration sudah benar
 - Klik **Save** dan **Restart** addon setelah mengubah konfigurasi
 
 ---
