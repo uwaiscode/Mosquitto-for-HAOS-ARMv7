@@ -1,4 +1,4 @@
-ARG BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/armv7-base:3.20
 FROM $BUILD_FROM
 
 # Install mosquitto MQTT broker
