@@ -7,9 +7,17 @@ RUN apk add --no-cache mosquitto
 # Create required directories
 RUN mkdir -p /etc/mosquitto /data/mosquitto
 
-# Copy addon files
+# Copy mosquitto config
 COPY mosquitto.conf /etc/mosquitto/mosquitto.conf
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
 
-CMD ["/run.sh"]
+# Copy s6 init script (runs once on startup)
+COPY cont-init.d/mosquitto-init.sh /etc/cont-init.d/mosquitto-init.sh
+
+# Copy s6 service scripts (runs as persistent service)
+COPY services.d/mosquitto/run /etc/services.d/mosquitto/run
+COPY services.d/mosquitto/finish /etc/services.d/mosquitto/finish
+
+RUN chmod a+x \
+    /etc/cont-init.d/mosquitto-init.sh \
+    /etc/services.d/mosquitto/run \
+    /etc/services.d/mosquitto/finish
