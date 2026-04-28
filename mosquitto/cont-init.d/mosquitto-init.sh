@@ -1,10 +1,11 @@
-#!/usr/bin/with-contenv bashio
+#!/bin/bash
+set -e
 
-MQTT_USER=$(bashio::config 'mqtt_username')
-MQTT_PASS=$(bashio::config 'mqtt_password')
+USERNAME=$(jq -r '.mqtt_username // "neutron"' /data/options.json)
+PASSWORD=$(jq -r '.mqtt_password // "neutron123"' /data/options.json)
 
 mkdir -p /data/mosquitto
 
-mosquitto_passwd -c -b /etc/mosquitto/passwd "${MQTT_USER}" "${MQTT_PASS}"
+mosquitto_passwd -c -b /etc/mosquitto/passwd "${USERNAME}" "${PASSWORD}"
 
-bashio::log.info "Mosquitto: password file created for user '${MQTT_USER}'"
+echo "[mosquitto] Password file created for user: ${USERNAME}"

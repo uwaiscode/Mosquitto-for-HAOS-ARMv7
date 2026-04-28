@@ -1,5 +1,2 @@
-#!/usr/bin/with-contenv bashio
-
-bashio::log.info "Starting Mosquitto MQTT broker on port 1883 (MQTT) and 9001 (WebSocket)..."
-
+#!/bin/bash
 exec mosquitto -c /etc/mosquitto/mosquitto.conf

@@ -1,3 +1,2 @@
-#!/usr/bin/with-contenv bashio
-
-bashio::log.warning "Mosquitto broker stopped."
+#!/bin/bash
+echo "[mosquitto] Broker stopped."
