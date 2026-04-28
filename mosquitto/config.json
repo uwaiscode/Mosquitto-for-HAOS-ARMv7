@@ -28,6 +28,5 @@
   "schema": {
     "mqtt_username": "str",
     "mqtt_password": "str"
-  },
-  "image": "ghcr.io/uwaiscode/{arch}-addon-mosquitto-neutron"
+  }
 }
