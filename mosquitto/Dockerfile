@@ -1,11 +1,11 @@
-ARG BUILD_FROM=eclipse-mosquitto:2
+ARG BUILD_FROM=alpine:3.20
 FROM $BUILD_FROM
 
-# Install jq to read /data/options.json from HAOS
-RUN apk add --no-cache jq
+# Install mosquitto (includes mosquitto_passwd) and jq
+RUN apk add --no-cache mosquitto jq
 
 # Copy mosquitto config
-COPY mosquitto.conf /mosquitto/config/mosquitto.conf
+COPY mosquitto.conf /etc/mosquitto/mosquitto.conf
 
 # Copy startup script
 COPY run.sh /run.sh

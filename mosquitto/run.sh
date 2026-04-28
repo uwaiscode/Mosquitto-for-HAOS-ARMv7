@@ -6,9 +6,8 @@ PASSWORD=$(jq -r '.mqtt_password // "neutron123"' /data/options.json)
 
 mkdir -p /data/mosquitto
 
-mosquitto_passwd -c -b /data/mosquitto/passwd "$USERNAME" "$PASSWORD"
+/usr/bin/mosquitto_passwd -c -b /data/mosquitto/passwd "$USERNAME" "$PASSWORD"
 
-echo "[mosquitto] Starting broker on port 1883 (MQTT) and 9001 (WebSocket)"
-echo "[mosquitto] Username: $USERNAME"
+echo "[mosquitto] Broker starting — MQTT :1883 | WebSocket :9001 | User: $USERNAME"
 
-exec mosquitto -c /mosquitto/config/mosquitto.conf
+exec /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
