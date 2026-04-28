@@ -1,0 +1,27 @@
+{
+  "name": "Mosquitto MQTT Broker",
+  "version": "1.0.0",
+  "slug": "mosquitto_neutron",
+  "description": "Mosquitto MQTT Broker with WebSocket support. MQTT: 1883, WebSocket: 9001. User: neutron",
+  "url": "https://github.com/YOUR_GITHUB_USERNAME/mosquitto-For-HAOS-ARMv7",
+  "arch": ["armv7"],
+  "startup": "system",
+  "boot": "auto",
+  "ports": {
+    "1883/tcp": 1883,
+    "9001/tcp": 9001
+  },
+  "ports_description": {
+    "1883/tcp": "MQTT Port",
+    "9001/tcp": "MQTT over WebSockets Port"
+  },
+  "map": ["data:rw"],
+  "options": {
+    "mqtt_username": "neutron",
+    "mqtt_password": "neutron123"
+  },
+  "schema": {
+    "mqtt_username": "str",
+    "mqtt_password": "str"
+  }
+}
