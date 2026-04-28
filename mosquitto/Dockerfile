@@ -21,16 +21,14 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
         tzdata && \
     \
 # ===== SETUP USER & DIRECTORIES =====
-    addgroup -S mosquitto && \
-    adduser -S -G mosquitto -h /var/lib/mosquitto mosquitto && \
     mkdir -p /etc/mosquitto /data/mosquitto /var/lib/mosquitto && \
-    chown -R mosquitto:mosquitto /etc/mosquitto /data/mosquitto /var/lib/mosquitto && \
-    \
+    chown -R mosquitto:mosquitto /etc/mosquitto /data/mosquitto /var/lib/mosquitto
+
 # ===== COPY CONFIGURATION =====
-    COPY mosquitto.conf /etc/mosquitto/mosquitto.conf && \
-    \
+COPY mosquitto.conf /etc/mosquitto/mosquitto.conf
+
 # ===== COPY S6 SERVICES (run.sh dipindah ke struktur s6) =====
-    COPY rootfs/ /
+COPY rootfs/ /
 
 # ===== ENTRYPOINT WAJIB: /init dari s6-overlay =====
 ENTRYPOINT ["/init"]
