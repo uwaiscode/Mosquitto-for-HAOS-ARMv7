@@ -1,0 +1,17 @@
+name: "Mosquitto for HAOS ARMv7"
+slug: "mosquitto_armv7"
+description: "Custom MQTT Broker Mosquitto untuk arsitektur 32-bit (ARMv7)"
+version: "1.0.0"
+arch:
+  - armv7
+startup: services
+boot: auto
+options:
+  username: "uwaiscode"
+  password: "uwaiscode"
+schema:
+  username: str
+  password: str
+ports:
+  1883/tcp: 1883
+  9001/tcp: 9001

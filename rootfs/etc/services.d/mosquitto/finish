@@ -1,6 +1,0 @@
-#!/bin/ash
-# finish script dipanggil s6 saat service berhenti
-# Exit code 0 = OK, non-zero = error
-
-echo "[mosquitto] Service stopped"
-exit 0
