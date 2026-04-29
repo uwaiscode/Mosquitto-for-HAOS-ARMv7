@@ -1,19 +1,24 @@
-#!/usr/bin/with-contenv bashio
+#!/bin/bash
 
-# Ambil Config dari UI HA
-USERNAME=$(bashio::config 'username')
-PASSWORD=$(bashio::config 'password')
+# Default credentials jika tidak dijalankan sebagai HA Add-on
+USERNAME="uwaiscode"
+PASSWORD="uwaiscode"
 
-# Buat file password baru setiap kali restart agar sinkron dengan UI
-bashio::log.info "Mempersiapkan autentikasi Mosquitto..."
+# Jika dijalankan sebagai HA Add-on, file config.json akan ada
+if [ -f "/data/options.json" ]; then
+    echo "[Info] Mendeteksi lingkungan Home Assistant Add-on..."
+    # Mengambil username/password dari options.json (HA Add-on standard)
+    # Anda butuh 'jq' jika ingin parsing otomatis, atau biarkan default untuk tes
+fi
+
+echo "[Info] Mempersiapkan autentikasi Mosquitto..."
 touch /etc/mosquitto/passwd
 mosquitto_passwd -b /etc/mosquitto/passwd "$USERNAME" "$PASSWORD"
 
-# Perbaiki permission agar Mosquitto tidak menolak file
 chown mosquitto:mosquitto /etc/mosquitto/passwd
 chmod 600 /etc/mosquitto/passwd
 
-bashio::log.info "Memulai Mosquitto Broker untuk user: $USERNAME"
+echo "[Info] Memulai Mosquitto Broker untuk user: $USERNAME"
 
-# Jalankan mosquitto menggunakan 'exec' agar s6-overlay tetap menjadi PID 1
+# Jalankan mosquitto di foreground
 exec mosquitto -c /etc/mosquitto/mosquitto.conf
