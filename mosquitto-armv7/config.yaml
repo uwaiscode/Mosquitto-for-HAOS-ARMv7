@@ -1,7 +1,7 @@
 name: "Mosquitto for HAOS ARMv7"
+description: "MQTT Broker Mosquitto khusus untuk arsitektur 32-bit (Orange Pi/iHost)"
+version: "1.0.2"
 slug: "mosquitto_armv7"
-description: "Custom MQTT Broker Mosquitto untuk arsitektur 32-bit (ARMv7)"
-version: "1.0.0"
 arch:
   - armv7
 startup: services
