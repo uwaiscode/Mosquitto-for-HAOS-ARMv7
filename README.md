@@ -1,152 +1,86 @@
-# Mosquitto MQTT Broker — Home Assistant OS Addon (ARMv7)
+# Mosquitto Broker for HAOS ARMv7
 
-Addon **Mosquitto MQTT Broker** untuk Home Assistant OS (HAOS) yang dioptimalkan untuk arsitektur **ARMv7 (32-bit)**.
+A lightweight, high-performance **MQTT Broker (Mosquitto)** specifically optimized for **ARMv7 (32-bit)** architectures. This add-on is designed for users running Home Assistant on legacy or specialized hardware like **Orange Pi One, Raspberry Pi 2/3 (32-bit OS), and Sonoff iHost**.
 
-Mendukung koneksi MQTT standar dan MQTT over WebSocket.
-
----
-
-## Fitur
-
-- **MQTT** pada port `1883`
-- **MQTT over WebSocket** pada port `9001`
-- Autentikasi username & password
-- Persistent storage (pesan & subscription tersimpan saat restart)
-- Konfigurasi username/password langsung dari UI Home Assistant
+## 🚀 Features
+* **Architecture Specific**: Tailored for `armv7` to ensure compatibility where official images might fail.
+* **Dual Listener**: Supports standard MQTT (`1883`) and WebSockets (`9001`).
+* **Persistence Enabled**: Retains MQTT messages and subscriptions across restarts.
+* **Integrated Security**: Easy username/password configuration directly via the Home Assistant UI.
+* **Lightweight**: Built on Alpine Linux for minimal RAM and CPU footprint.
 
 ---
 
-## Persyaratan
+## 🛠️ Installation
 
-- Home Assistant OS dengan arsitektur **ARMv7** (32-bit)
-- Contoh perangkat: Raspberry Pi 2, Orange Pi, atau SBC ARMv7 lainnya
+1. **Add Repository**:
+   * Open your Home Assistant instance.
+   * Go to **Settings** > **Add-ons** > **Add-on Store**.
+   * Click the three dots in the top right corner and select **Repositories**.
+   * Add this URL: `https://github.com/uwaiscode/Mosquitto-for-HAOS-ARMv7`
+   * Click **Add** and then **Close**.
 
----
+2. **Install Add-on**:
+   * Search for "Mosquitto for HAOS ARMv7" in the store.
+   * Click **Install**.
 
-## Instalasi
+3. **Configuration**:
+   * Go to the **Configuration** tab of the add-on.
+   * Set your desired `username` and `password`.
+   * Click **Save**.
 
-### 1. Tambahkan Repository
-
-1. Buka Home Assistant → **Settings** → **Add-ons** → **Add-on Store**
-2. Klik ikon tiga titik (⋮) di pojok kanan atas → **Repositories**
-3. Tambahkan URL berikut:
-   ```
-   https://github.com/uwaiscode/Mosquitto-for-HAOS-ARMv7
-   ```
-4. Klik **Add** → **Close**
-
-### 2. Install Addon
-
-1. Refresh halaman Add-on Store
-2. Temukan **Mosquitto MQTT Broker** di daftar
-3. Klik **Install**
-4. Tunggu proses build selesai
-
-### 3. Konfigurasi
-
-Di tab **Configuration** addon, sesuaikan:
-
-```yaml
-mqtt_username: neutron
-mqtt_password: neutron123
-```
-
-> Ganti password dengan nilai yang lebih aman untuk lingkungan produksi.
-
-### 4. Jalankan
-
-1. Klik **Start**
-2. Aktifkan **Start on boot** dan **Watchdog** sesuai kebutuhan
+4. **Start**:
+   * Go back to the **Info** tab and click **Start**.
 
 ---
 
-## Informasi Koneksi Default
+## 📡 Connecting Clients
 
-| Parameter  | Nilai                  |
-|------------|------------------------|
-| Host       | IP perangkat HAOS Anda |
-| MQTT Port  | `1883`                 |
-| WS Port    | `9001`                 |
-| Username   | `neutron`              |
-| Password   | `neutron123`           |
+To connect external devices (like Zigbee2MQTT, ESP32, or Tasmota), use the following settings:
+
+| Parameter | Value |
+| :--- | :--- |
+| **Broker/Host** | `your_device_ip` (e.g., `192.168.18.7`) |
+| **Port** | `1883` |
+| **Protocol** | `mqtt://` |
+| **Username** | *(As set in config)* |
+| **Password** | *(As set in config)* |
+
+### Connecting from other Add-ons (e.g., Zigbee2MQTT)
+If Zigbee2MQTT is running on the same Home Assistant instance, use the internal hostname:
+`mqtt://mosquitto_armv7:1883`
 
 ---
 
-## Contoh Koneksi
+## 📄 Configuration Example (`mosquitto.conf`)
+The add-on uses a pre-configured `mosquitto.conf` that allows external access and enforces password authentication. 
 
-### Python (paho-mqtt)
+```conf
+listener 1883 0.0.0.0
+protocol mqtt
 
-```python
-import paho.mqtt.client as mqtt
+listener 9001 0.0.0.0
+protocol websockets
 
-client = mqtt.Client()
-client.username_pw_set("neutron", "neutron123")
-client.connect("192.168.1.x", 1883, 60)
-client.publish("home/sensor/suhu", "25.5")
-```
-
-### MQTT.js (WebSocket)
-
-```javascript
-const mqtt = require('mqtt');
-const client = mqtt.connect('ws://192.168.1.x:9001', {
-  username: 'neutron',
-  password: 'neutron123'
-});
-client.on('connect', () => {
-  client.subscribe('home/#');
-});
-```
-
-### ESP32 / ESP8266 (Arduino)
-
-```cpp
-#include <PubSubClient.h>
-
-const char* mqtt_server = "192.168.1.x";
-const int   mqtt_port   = 1883;
-const char* mqtt_user   = "neutron";
-const char* mqtt_pass   = "neutron123";
-
-client.connect("ESP_Device", mqtt_user, mqtt_pass);
+allow_anonymous false
+password_file /etc/mosquitto/passwd
 ```
 
 ---
 
-## Struktur Repository
+## 🛠 Troubleshooting
 
-```
-Mosquitto-for-HAOS-ARMv7/
-├── repository.yaml        # Wajib: identifikasi sebagai addon repository HAOS
-├── README.md              # Dokumentasi ini
-└── mosquitto/             # Folder addon
-    ├── config.json        # Konfigurasi addon HAOS
-    ├── build.json         # Konfigurasi build Docker (ARMv7)
-    ├── Dockerfile         # Docker image definition
-    ├── mosquitto.conf     # Konfigurasi Mosquitto broker
-    └── run.sh             # Script startup addon
-```
+* **PID 1 Error**: This add-on uses a specialized startup script to ensure compatibility with `s6-overlay`. Always use the provided `run.sh`.
+* **Connection Refused**: Ensure the add-on is started and that your firewall allows traffic on port `1883`.
+* **Authentication Failure**: Double-check the credentials in the Configuration tab and restart the add-on after any changes.
 
 ---
 
-## Troubleshooting
-
-**"not a valid add-on repository"?**
-Pastikan file `repository.yaml` ada di root repository GitHub.
-
-**Addon tidak muncul setelah tambah repo?**
-Refresh browser atau clear cache, lalu coba lagi.
-
-**Koneksi ditolak (Connection Refused)?**
-- Pastikan addon sudah berstatus **Running**
-- Cek port 1883/9001 tidak diblokir firewall router
-
-**Authentication Failed?**
-- Pastikan username dan password di tab Configuration sudah benar
-- Klik **Save** dan **Restart** addon setelah mengubah konfigurasi
+## 👤 Author
+**Triyadi (Abu Uwais)** Full-stack Developer & IoT Engineer.  
+*Specializing in Industrial Automation, SCADA, and Embedded Systems.*
 
 ---
 
-## Lisensi
-
-MIT License — bebas digunakan dan dimodifikasi.
+## ⚖️ License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
